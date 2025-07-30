@@ -58,7 +58,21 @@ async function saveChangeHistory({ entity, entityId, action, dataBefore, dataAft
 
 /** 🔹 CREAR VARIANT */
 app.post('/variants', authenticateToken, async (req, res) => {
-  const { clientId, clientRef, sku, name, description, label, imageUrl, productId, categoryId, stock, attributes, customFields, status } = req.body;
+  const {
+    clientId,
+    clientRef,
+    sku,
+    name,
+    description,
+    label,
+    imageUrl,
+    productId,
+    categoryId,
+    stock,
+    attributes,
+    customFields,
+    status,
+  } = req.body;
 
   if (!sku || !name || !clientId) {
     return res.status(400).json({ error: 'SKU, nom i clientId són obligatoris' });
@@ -67,16 +81,16 @@ app.post('/variants', authenticateToken, async (req, res) => {
   try {
     const variant = await prisma.variant.create({
       data: {
-        clientId,
+        clientId: parseInt(clientId),
         clientRef,
         sku,
         name,
         description,
         label,
         imageUrl,
-        productId,
-        categoryId,
-        stock: stock ?? 0,
+        productId: productId ? parseInt(productId) : null,
+        categoryId: categoryId ? parseInt(categoryId) : null,
+        stock: stock !== undefined ? parseInt(stock) : 0,
         attributes,
         customFields,
         status: status ?? 'DRAFT',
@@ -227,7 +241,7 @@ app.put('/variants/:id/category', authenticateToken, async (req, res) => {
     const updated = await prisma.variant.update({
       where: { id: variantId },
       data: {
-        categoryId,
+        categoryId: parseInt(categoryId),
       },
     });
 
@@ -349,7 +363,18 @@ app.delete('/categories/:id', authenticateToken, async (req, res) => {
 
 //** 🔹 CREAR PRODUCTE */
 app.post('/products', authenticateToken, async (req, res) => {
-  const { clientId, clientRef, name, description, label, imageUrl, tags, categoryId, customFields, status } = req.body;
+  const {
+    clientId,
+    clientRef,
+    name,
+    description,
+    label,
+    imageUrl,
+    tags,
+    categoryId,
+    customFields,
+    status,
+  } = req.body;
 
   if (!name || !clientId) {
     return res.status(400).json({ error: 'Nom i clientId són obligatoris' });
@@ -358,14 +383,14 @@ app.post('/products', authenticateToken, async (req, res) => {
   try {
     const product = await prisma.product.create({
       data: {
-        clientId,
+        clientId: parseInt(clientId),
         clientRef,
         name,
         description,
         label,
         imageUrl,
         tags,
-        categoryId,
+        categoryId: categoryId ? parseInt(categoryId) : null,
         customFields,
         status: status ?? 'DRAFT',
       },
@@ -399,7 +424,20 @@ app.post('/products', authenticateToken, async (req, res) => {
  /** EDITAR VARIANT */
  app.put('/variants/:id', authenticateToken, async (req, res) => {
   const variantId = parseInt(req.params.id);
-  const { clientRef, sku, name, description, label, imageUrl, productId, categoryId, stock, attributes, customFields, status } = req.body;
+  const {
+    clientRef,
+    sku,
+    name,
+    description,
+    label,
+    imageUrl,
+    productId,
+    categoryId,
+    stock,
+    attributes,
+    customFields,
+    status,
+  } = req.body;
 
   if (!name) {
     return res.status(400).json({ error: 'El nom és obligatori' });
@@ -417,9 +455,9 @@ app.post('/products', authenticateToken, async (req, res) => {
         description,
         label,
         imageUrl,
-        productId,
-        categoryId,
-        stock,
+        productId: productId ? parseInt(productId) : null,
+        categoryId: categoryId ? parseInt(categoryId) : null,
+        stock: stock !== undefined ? parseInt(stock) : undefined,
         attributes,
         customFields,
         status,
@@ -520,7 +558,17 @@ app.get('/products', async (req, res) => {
 /** EDITAR PRODUCTE */
 app.put('/products/:id', authenticateToken, async (req, res) => {
   const productId = parseInt(req.params.id);
-  const { clientRef, name, description, label, imageUrl, tags, categoryId, customFields, status } = req.body;
+  const {
+    clientRef,
+    name,
+    description,
+    label,
+    imageUrl,
+    tags,
+    categoryId,
+    customFields,
+    status,
+  } = req.body;
 
   if (!name) {
     return res.status(400).json({ error: 'El nom és obligatori' });
@@ -538,7 +586,7 @@ app.put('/products/:id', authenticateToken, async (req, res) => {
         label,
         imageUrl,
         tags,
-        categoryId,
+        categoryId: categoryId ? parseInt(categoryId) : null,
         customFields,
         status,
       },
@@ -553,23 +601,6 @@ app.put('/products/:id', authenticateToken, async (req, res) => {
       },
     });
 
-    await saveChangeHistory({
-      entity: 'Product',
-      entityId: productId,
-      action: 'UPDATE',
-      dataBefore: before,
-      dataAfter: updated,
-      userId: req.userId,
-    });
-
-    res.json(updated);
-  } catch (err) {
-    console.error('Error editant producte:', err);
-    res.status(500).json({ error: 'Error al editar el producte' });
-  }
-});
-
-    // 🔥 Guardar historial
     await saveChangeHistory({
       entity: 'Product',
       entityId: productId,
@@ -678,7 +709,7 @@ app.put('/products/:id/category', authenticateToken, async (req, res) => {
     const updated = await prisma.product.update({
       where: { id: productId },
       data: {
-        categoryId,
+        categoryId: parseInt(categoryId),
       },
     });
 
