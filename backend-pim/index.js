@@ -1075,7 +1075,7 @@ app.get('/audit-logs', authenticateToken, async (req, res) => {
   }
 });
 
-/**MIDLEWARE IDENTIFICACIÓ */
+/**MIDDLEWARE IDENTIFICACIÓ */
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -1087,7 +1087,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-/**APLICAR MIDLEWARE */
+/**APLICAR MIDDLEWARE */
 app.get('/products', authenticateToken, async (req, res) => {
   // req.userId disponible
   // pots filtrar per client, logs, etc.
