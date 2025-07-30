@@ -4,8 +4,10 @@ import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
 dotenv.config();
-console.log("Ruta actual:", process.cwd());
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
+if (process.env.NODE_ENV === 'development') {
+  console.log("Ruta actual:", process.cwd());
+  console.log("DATABASE_URL:", process.env.DATABASE_URL);
+}
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken'; // <- ✅ aquí
