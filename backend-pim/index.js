@@ -9,6 +9,7 @@ console.log("DATABASE_URL:", process.env.DATABASE_URL);
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken'; // <- ✅ aquí
+import bcrypt from 'bcryptjs';
 import { PrismaClient } from './generated/prisma/index.js';
 
 // Crear carpeta 'uploads' si no existeix
@@ -997,7 +998,6 @@ app.get('/users/:id', authenticateToken, async (req, res) => {
 
 
 /** Endpoint per registre d'usuari */
-import bcrypt from 'bcryptjs';
 
 app.post('/users/register', async (req, res) => {
   const { name, email, password } = req.body;
@@ -1205,6 +1205,11 @@ app.get('/change-history', authenticateToken, async (req, res) => {
 /** 🚀 INICI DEL SERVIDOR */
 const PORT = process.env.PORT || 4000;
 app.use('/uploads', express.static(uploadDir));
-app.listen(PORT, () => {
-  console.log(`Servidor escoltant a http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Servidor escoltant a http://localhost:${PORT}`);
+  });
+}
+
+export default app;
+export { prisma };
