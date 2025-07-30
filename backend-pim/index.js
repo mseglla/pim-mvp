@@ -116,7 +116,14 @@ app.post('/variants', authenticateToken, async (req, res) => {
       dataBefore: null,
       dataAfter: variant,
       userId: req.userId,
-    });    
+    });
+
+    res.status(201).json(variant);
+  } catch (err) {
+    console.error('Error creant variant:', err);
+    res.status(500).json({ error: 'Error al crear la variant' });
+  }
+});
 
 /** 🔹 OBTENIR VARIANTS */
 app.get('/variants', async (req, res) => {
