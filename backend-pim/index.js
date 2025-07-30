@@ -8,7 +8,7 @@ console.log("Ruta actual:", process.cwd());
 console.log("DATABASE_URL:", process.env.DATABASE_URL);
 import express from 'express';
 import cors from 'cors';
-import jwt from 'jsonwebtoken'; // <- ✅ aquí
+import jwt from 'jsonwebtoken'; // Library for generating and verifying JWT tokens
 import { PrismaClient } from './generated/prisma/index.js';
 
 // Crear carpeta 'uploads' si no existeix
