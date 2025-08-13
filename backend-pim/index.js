@@ -13,6 +13,7 @@ import attributeRoutes from './routes/attributeRoutes.js';
 import auditRoutes from './routes/auditRoutes.js';
 import importExportRoutes from './routes/importExportRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import { authenticateToken } from './middleware/auth.js';
 
 dotenv.config();
 if (process.env.NODE_ENV === 'development') {
@@ -30,7 +31,7 @@ app.use('/variants', variantRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/users', userRoutes);
-app.use('/clients', clientRoutes);
+app.use('/clients', authenticateToken, clientRoutes);
 app.use('/attributes', attributeRoutes);
 app.use('/', auditRoutes);
 app.use('/', importExportRoutes);
